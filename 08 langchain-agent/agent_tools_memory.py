@@ -1,6 +1,6 @@
 from langchain_openai import ChatOpenAI
 from langchain_community.tools.tavily_search import TavilySearchResults
-
+# 网络搜索工具
 search = TavilySearchResults(max_results=1)
 
 # pip install langchain
@@ -10,7 +10,7 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-
+# 本地知识库工具
 loader = WebBaseLoader("https://zh.wikipedia.org/wiki/%E7%8C%AB")
 docs = loader.load()
 documents = RecursiveCharacterTextSplitter(
@@ -24,29 +24,29 @@ retriever_tool = create_retriever_tool(
     "wiki_search",
     "搜索维基百科",
 )
-
+# 语言模型
 model = ChatOpenAI(model="gpt-4")
-
+# 工具集合
 tools = [search, retriever_tool]
-
+# 提示模板
 from langchain import hub
 # 获取要使用的提示 - 您可以修改这个！
 prompt = hub.pull("hwchase17/openai-functions-agent")
-
+# 代理创建
 from langchain.agents import create_tool_calling_agent
 agent = create_tool_calling_agent(model, tools, prompt)
-
+# 执行器
 from langchain.agents import AgentExecutor
 agent_executor = AgentExecutor(agent=agent, tools=tools)
 
 #print(agent_executor.invoke({"input": "你好，我的名字是Cyber", "chat_history": []}))
 from langchain_core.messages import AIMessage, HumanMessage
-
+#对话历史管理
 response = agent_executor.invoke(
     {
         "chat_history": [
-            HumanMessage(content="Hi，我的名字是Jack"),
-            AIMessage(content="你好，Jack，很高兴见到你！有什么我可以帮助你的吗？"),
+            HumanMessage(content="Hi，我的名字是Jack"),   #用户输入
+            AIMessage(content="你好，Jack，很高兴见到你！有什么我可以帮助你的吗？"),  #AI响应
         ],
         "input": "我的名字是什么?",
     }

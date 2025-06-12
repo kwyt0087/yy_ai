@@ -45,19 +45,19 @@ from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
 store = {}
-
+#为执行器添加对话历史管理能力
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     if session_id not in store:
-        store[session_id] = ChatMessageHistory()
+        store[session_id] = ChatMessageHistory()  # 按需创建新会话
     return store[session_id]
-
+# 历史增强代理
 agent_with_chat_history = RunnableWithMessageHistory(
-    agent_executor,
-    get_session_history,
-    input_messages_key="input",
-    history_messages_key="chat_history",
+    agent_executor,   # 基础代理执行器
+    get_session_history,   # 历史获取函数
+    input_messages_key="input",  # 输入消息键
+    history_messages_key="chat_history",  # 历史存储键
 )
-
+#调用
 response = agent_with_chat_history.invoke(
     {"input": "Hi，我的名字是Jack"},
     config={"configurable": {"session_id": "123"}},

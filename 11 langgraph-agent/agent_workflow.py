@@ -37,7 +37,7 @@ class PlanExecute(TypedDict):
 
 from pydantic import BaseModel, Field
 
-
+#通过Pydantic库的BaseModel类，可以定义一个数据模型
 # 定义一个Plan模型类，用于描述未来要执行的计划
 class Plan(BaseModel):
     """未来要执行的计划"""
@@ -82,6 +82,8 @@ class Response(BaseModel):
 # action 属性的描述为：要执行的行为。如果要回应用户，使用 Response；如果需要进一步使用工具获取答案，使用 Plan。
 class Act(BaseModel):
     """要执行的行为"""
+    # Union在Python 3.10及以上版本中可以用X | Y的语法替代，比如int | str
+    #   action: Response | Plan = Field(...)
     action: Union[Response, Plan] = Field(
         description="要执行的行为。如果要回应用户，使用Response。如果需要进一步使用工具获取答案，使用Plan。"
     )
